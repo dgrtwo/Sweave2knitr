@@ -1,5 +1,6 @@
 """
-Contains parser and converter for Sweave noweb LaTeX
+Contains parser to tokenize Sweave LaTeX and turn it into a format compatible
+with knitr.
 """
 
 import re
@@ -131,7 +132,7 @@ class RegularTextToken(Token):
 
 
 class SweaveConverter(object):
-    """Parses noweb LaTeX and handles conversion to other formats"""
+    """Parses noweb LaTeX and handles conversion to knitr"""
     def __init__(self, infile=None, txt=None):
         """Given either an input file or text"""
         if infile == None and txt == None:
