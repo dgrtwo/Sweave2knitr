@@ -4,6 +4,7 @@ with knitr.
 """
 
 import re
+import warnings
 
 
 ### PARAMETERS ###
@@ -17,13 +18,25 @@ pattern = "(?:" + "|".join([
         r"(\\[^\s]*{.*?})",          # command
 ]) + ")"
 
+DROPPED_OPTIONS = ["term", "prefix", "stripe.white"]
+
+OPTION_MAPPINGS = {"prefix.string": "fig.path",
+                   "width": "fig.width", "height": "fig.height"}
+
+PAIR_MAPPINGS = {("fig", "TRUE"): ("keep.fig", "'high'"),
+                 ("fig", "FALSE"): ("keep.fig", "'none'"),
+                 ("keep.source", "TRUE"): ("tidy", "FALSE"),
+                 ("keep.source", "FALSE"): ("tidy", "TRUE")}
+
 
 ### FUNCTIONS ###
 
 def _convert_knitr_option(key, value):
-    """convert a single option to knitr format"""
-    # this tries pretty hard to keep the whitespace consistent, though it
-    # is certainly not guaranteed
+    """
+    Convert a single option to knitr format. Return None if the option
+    should be dropped. This will get rid of whitespace around the key and value
+    """
+    key, value = key.strip(), value.strip()
     if value == "":
         # no conversion necessary
         return (key, value)
@@ -38,7 +51,19 @@ def _convert_knitr_option(key, value):
         if not value.endswith("'"):
             value = value + "'"
 
-    return key, value
+    k, v = key.strip(), value.strip()
+
+    if k in OPTION_MAPPINGS:
+        k = OPTION_MAPPINGS[k]
+
+    if k in DROPPED_OPTIONS:
+        warnings.warn("Dropping option %s, unsupported in knitr" % k)
+        return None
+
+    if (k, v) in PAIR_MAPPINGS:
+        k, v = PAIR_MAPPINGS[(k, v)]
+
+    return k, v
 
 
 def _convert_knitr_options(args):
@@ -46,9 +71,11 @@ def _convert_knitr_options(args):
     convert a list of options to an Sweave code chunk (or SweaveOpts) to
     knitr format
     """
-    fixed_args = [("=".join(_convert_knitr_option(*a)) if a[1] != ""
+    converted = [_convert_knitr_option(*a) for a in args]
+    fixed_args = [("=".join(a) if a[1] != ""
                                 else a[0])
-                            for a in args]
+                            for a in converted if a != None]
+    fixed_args = [a for a in fixed_args if a != None]
 
     # check for special case of print=FALSE, term=FALSE
     stripped = [map(str.strip, o) for o in fixed_args]

@@ -4,11 +4,12 @@ Unit tests for Sweave2knitr script
 
 import re
 import unittest
+import warnings
 
 from Sweave2knitr import converter
 
 
-### TEXT BLOCKS ###
+### TEXT BLOCK ###
 ## used for testing
 
 txt1 = r"""
@@ -22,8 +23,11 @@ library(somelib)
 setCacheDir("cache")
 @
 
-<<named_chunk, results=hide>>=
+<<named_chunk, results=hide, fig=TRUE>>=
 # R code here
+@
+
+<<keep.source=TRUE, term=TRUE>>=
 @
 
 LaTeX can include commands like \SomeCommand{arg} with arguments, or without
@@ -38,7 +42,13 @@ class TestConverter(unittest.TestCase):
     def test_parsing(self):
         """Provide simple examples of noweb LaTeX"""
         p = converter.SweaveConverter(txt=txt1)
-        result = p.convert_knitr()
+
+        # check warning for dropped option
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            result = p.convert_knitr()
+            self.assertEqual(len(w), 1)
+            self.assertTrue("term" in str(w[0].message))
 
         self.assertTrue("Sweave" not in result)
         Sexpr_line = ("\\Sexpr{opts_chunk$set(results='asis',echo=FALSE," +
@@ -48,7 +58,9 @@ class TestConverter(unittest.TestCase):
         self.assertTrue(Sexpr_line in spaceless_result)
 
         self.assertTrue("<<echo=FALSE>>=" in result)
-        self.assertTrue("<<named_chunk,results='hide'>>=" in spaceless_result)
+        self.assertTrue("<<tidy=FALSE>>=" in result)
+        self.assertTrue("<<named_chunk,results='hide',keep.fig='high'>>="
+                            in spaceless_result)
 
         # check that text and R code remains
         self.assertTrue(r"like \SomeCommand{arg} with" in result)
