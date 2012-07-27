@@ -1,0 +1,30 @@
+#!/usr/bin/env python
+"""
+Sweave2knitr
+
+A simple python script for converting a Sweave LaTeX document to a knitr
+document, based on and inspired by Jeromy Anglim's blog entry on the subject:
+
+jeromyanglim.blogspot.com/2012/06/converting-sweave-latex-to-knitr-latex.html
+
+This is a very early work in progress- it has been tested on only a very small
+handful of Sweave documents.
+"""
+
+import sys
+import os
+
+from Sweave2knitr import converter
+
+USAGE = "USAGE: Sweave2knitr infile outfile"
+
+### CLASSES ###
+
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print USAGE
+        sys.exit()
+
+    [infile, outfile] = sys.argv[1:]
+    converter = converter.SweaveConverter(infile)
+    converter.convert_knitr(outfile)
