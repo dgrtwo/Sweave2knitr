@@ -8,18 +8,18 @@ Sweave2knitr is a simple Python script that helps to convert [Sweave](http://www
 Installation
 ------------
 
-Install using
+You can install Sweave2knitr from the [Python Package Index](http://pypi.python.org/pypi) using:
 
-    python setup.py build
-    python setup.py install
+    easy_install Sweave2knitr
 
-You can also install it through [pip](http://pypi.python.org/pypi/pip/) using:
+or using pip:
 
     pip install Sweave2knitr
 
-Once installed, you can run unit tests using
+(On Linux or Macs, you might need to add `sudo` to the start of each command). You can also install it from source:
 
-    python tests/tests.py
+    python setup.py build
+    python setup.py install
 
 Usage
 -----
