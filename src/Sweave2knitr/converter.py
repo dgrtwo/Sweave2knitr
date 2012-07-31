@@ -14,7 +14,7 @@ import warnings
 # commands
 
 pattern = "(?:" + "|".join([
-        r"(<<.*?>>=.*?[\n\r]@)",     # code chunk
+        r"([\n\r]<<.*?>>=.*?[\n\r]@)",     # code chunk
         r"(\\[^\s]*{.*?})",          # command
 ]) + ")"
 
@@ -98,7 +98,7 @@ class CodeChunkToken(Token):
     """A Sweave code chunk"""
     def __init__(self, txt):
         """Given the text of the code chunk"""
-        options, self.rest = re.match("<<(.*?)>>=(.*)", txt,
+        options, self.rest = re.search("<<(.*?)>>=(.*)", txt,
                                         re.DOTALL).groups()
         self.options = re.findall("([^<> ,\=]+)=?([^<> ,]*)", options)
 
