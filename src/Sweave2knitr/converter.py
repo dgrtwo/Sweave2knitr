@@ -14,7 +14,7 @@ import warnings
 # commands
 
 pattern = "(?:" + "|".join([
-        r"([\n\r]<<.*?>>=.*?[\n\r]@)",     # code chunk
+        r"[\n\r](<<.*?>>=.*?[\n\r]@)",     # code chunk
         r"(\\[^\s]*{.*?})",          # command
 ]) + ")"
 
@@ -110,7 +110,7 @@ class CodeChunkToken(Token):
         rest = "\n".join([l for l in self.rest.split("\n")
                             if "setCacheDir" not in l])
 
-        return "<<%s>>=%s" % (",".join(_convert_knitr_options(self.options)),
+        return "\n<<%s>>=%s" % (",".join(_convert_knitr_options(self.options)),
                                         rest)
 
 
