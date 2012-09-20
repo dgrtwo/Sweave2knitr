@@ -34,6 +34,17 @@ LaTeX can include commands like \SomeCommand{arg} with arguments, or without
 like \this.
 """
 
+txt2 = r"""
+\usepackage{hyperref}
+
+<<test1, cache = TRUE>>=
+print("hello")
+@
+
+<<test2, results     =    tex>>=
+
+@
+"""
 
 class TestConverter(unittest.TestCase):
     """
@@ -71,6 +82,11 @@ class TestConverter(unittest.TestCase):
 
         # should be missing only two lines: setCacheDir and \usepackage{Sweave}
         self.assertTrue(len(result.split("\n")), len(txt1.split("\n")) - 2)
+
+        p = converter.SweaveConverter(txt=txt2)
+        result = p.convert_knitr().replace(" ", "")
+        self.assertTrue("<<test1,cache=TRUE>>=" in result)
+        self.assertTrue("<<test2,results='asis'>>=" in result)
 
 
 if __name__ == "__main__":

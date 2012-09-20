@@ -100,7 +100,7 @@ class CodeChunkToken(Token):
         """Given the text of the code chunk"""
         options, self.rest = re.search("<<(.*?)>>=(.*)", txt,
                                         re.DOTALL).groups()
-        self.options = re.findall("([^<> ,\=]+)=?([^<> ,]*)", options)
+        self.options = re.findall("([^<> ,\=]+)\s*=?\s*([^<> ,]*)", options)
 
     def convert_knitr(self):
         """
