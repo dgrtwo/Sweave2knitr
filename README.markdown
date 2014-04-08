@@ -1,6 +1,8 @@
 Sweave2knitr
 ============
 
+*ATTENTION*: This package is now **deprecated**- instead use the Sweave2knitr function built into knitr (described [here](http://yihui.name/knitr/demo/sweave/)).
+
 Sweave2knitr is a simple Python script that helps to convert [Sweave](http://www.statistik.lmu.de/~leisch/Sweave/) LaTeX documents to be instead compatible with Yihui Xie's [knitr](http://yihui.name/knitr/) package. It is based on and inspired by Jeromy Anglim's blog entry [ Converting Sweave LaTeX to knitr LaTeX: A case study ](http://jeromyanglim.blogspot.com/2012/06/converting-sweave-latex-to-knitr-latex.html).
 
 *Warning:* This conversion is not an exact science. While this catches some of the most common issues faced when converting from Sweave to LaTeX, there are a virtually infinite number of special cases that will have to be handled. Furthermore, this is a very early version that has been tested on only a few documents. Try it on your own Sweave documents: contributions are *strongly* encouraged!
